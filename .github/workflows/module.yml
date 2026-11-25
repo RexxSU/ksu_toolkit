@@ -52,10 +52,13 @@ jobs:
           pnpm run build
 
       - name: Update version code
-        run: sed -i 's/^versionCode=.*/versionCode=${{ github.run_number }}/' module/module.prop
+        run: |
+          RUN_NUM=$((536 + ${{ github.run_number }}))
+          echo "RUN_NUM=$RUN_NUM" >> "$GITHUB_ENV"
+          sed -i "s/^versionCode=.*/versionCode=$RUN_NUM/" module/module.prop
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ env.MODULE_NAME }}-${{ github.run_number }}
+          name: ${{ env.MODULE_NAME }}-${{ env.RUN_NUM }}
           path: module/
